@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colegio San Ignacio - Educación de Excelencia</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#3b82f6',secondary:'#10b981'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .slider-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .slider-indicator.active {
+            background-color: white;
+        }
+        input[type="checkbox"], input[type="radio"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #d1d5db;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+        }
+        input[type="radio"] {
+            border-radius: 50%;
+        }
+        input[type="checkbox"]:checked, input[type="radio"]:checked {
+            background-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+        input[type="checkbox"]:checked::before {
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 10px;
+            border-right: 2px solid white;
+            border-bottom: 2px solid white;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -60%) rotate(45deg);
+        }
+        input[type="radio"]:checked::before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: white;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+        }
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background-color: #3b82f6;
+            z-index: 1000;
+            width: 0%;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .back-to-top {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 200px;
+            gap: 16px;
+        }
+        .gallery-grid div:nth-child(4n+1) {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+        .gallery-grid div:nth-child(8n+2) {
+            grid-column: span 2;
+        }
+        .gallery-grid div:nth-child(8n+8) {
+            grid-row: span 2;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    
+    <!-- Barra de navegación -->
+    <header class="fixed top-0 left-0 right-0 bg-white shadow-md z-50">
+        <div class="container mx-auto px-2 py-2 flex items-center justify-between">
+            <a href="#inicio" class="flex items-center space-x-3">
+                <img src="img/logo.png" alt="Logo Colegio San Ignacio" class="h-16 w-auto">
+                <div class="flex flex-col leading-tight">
+                    <span class="text-x md:text-2xl font-bold text-primary whitespace-nowrap">COLEGIO</span>
+                    <span class="text-x md:text-2xl font-bold text-primary whitespace-nowrap">MIGUEL GRAU</span>
+                </div>
+            </a>
+            
+             <nav class="hidden md:flex items-center space-x-8">
+                <a href="#inicio" class="text-gray-800 hover:text-primary font-medium transition-colors">Inicio</a>
+                <a href="#academic" class="text-gray-800 hover:text-primary font-medium transition-colors">Académico</a>
+                <a href="#admissions" class="text-gray-800 hover:text-primary font-medium transition-colors">Admisiones</a>
+                <a href="#news" class="text-gray-800 hover:text-primary font-medium transition-colors">Noticias</a>
+                <a href="#contact" class="text-gray-800 hover:text-primary font-medium transition-colors">Contacto</a>
+             </nav>
+            
+            <div class="flex items-right space-x-4">
+                    <a href="pdf/FOLLETO-COLEGIO.pdf" download class="bg-primary text-white px-4 py-2 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Broucher</a>                
+                <div class="relative">
+                    <!-- <input type="text" placeholder="Buscar..." class="border border-gray-300 !rounded-button py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm w-40 md:w-auto">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 flex items-center justify-center text-gray-400">
+                        <i class="ri-search-line"></i>
+                    </div> -->
+                    <!-- Reemplaza el input por este formulario en la barra de navegación -->
+                </div>
+                
+                <button class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700">
+                    <i class="ri-menu-line ri-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Espacio para compensar la barra fija -->
+    <div class="h-16"></div>
+    
+    <!-- Banner Principal -->
+    <section class="slider-container relative h-[600px] bg-gray-900" id="inicio">
+        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('img/portada.jpg');">
+            <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+            <div class="container mx-auto px-4 h-full flex items-center">
+                <div class="max-w-2xl text-white">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Formando líderes para el futuro</h1>
+                    <p class="text-xl mb-8">En Colegio Miguel Grau, nos dedicamos a la excelencia académica y al desarrollo integral de nuestros estudiantes.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <!-- <a href="pdf/FOLLETO-COLEGIO.pdf" class="bg-primary text-white px-4 py-2 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Descargar Boucher</a> -->
+                        <!-- <a href="#about" class="bg-white text-gray-900 px-6 py-3 !rounded-button whitespace-nowrap hover:bg-gray-100 transition-colors">Conoce más</a> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Indicadores del slider -->
+        <div class="absolute bottom-6 left-0 right-0 flex justify-center space-x-3">
+            <div class="slider-indicator active"></div>
+            <div class="slider-indicator"></div>
+            <div class="slider-indicator"></div>
+        </div>
+    </section>
+    
+    <!-- Sección de Destacados -->
+    <section class="py-16 bg-white" id="news">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Noticias</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Noticias y eventos -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform hover:-translate-y-1">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=Students%20participating%20in%20a%20science%20fair%2C%20showcasing%20innovative%20projects%20with%20colorful%20displays%20and%20interactive%20demonstrations.%20The%20students%20are%20explaining%20their%20experiments%20to%20visitors%20with%20enthusiasm.%20The%20background%20shows%20a%20modern%20school%20interior%20with%20bright%20lighting&width=600&height=400&seq=2&orientation=landscape" alt="Últimas noticias" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">Últimas Noticias y Eventos</h3>
+                        <p class="text-gray-600 mb-4">Nuestros estudiantes obtuvieron el primer lugar en la Feria Nacional de Ciencias con su proyecto de energía renovable.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <div class="w-4 h-4 flex items-center justify-center mt-1 text-primary">
+                                    <i class="ri-calendar-line"></i>
+                                </div>
+                                <p class="ml-2 text-sm text-gray-700">11 de Mayo, 2025 - Competencia de Matemáticas</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-4 h-4 flex items-center justify-center mt-1 text-primary">
+                                    <i class="ri-calendar-line"></i>
+                                </div>
+                                <p class="ml-2 text-sm text-gray-700">15 de Mayo, 2025 - Día de la Familia</p>
+                            </div>
+                        </div>
+                        <a href="#" class="inline-block mt-4 text-primary font-medium hover:underline">Leer más</a>
+                    </div>
+                </div>
+                
+                <!-- Calendario académico -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform hover:-translate-y-1">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=A%20modern%20school%20calendar%20displayed%20on%20a%20wall%2C%20showing%20important%20academic%20dates%20and%20events.%20The%20calendar%20is%20colorful%20and%20well-organized%2C%20with%20various%20educational%20symbols%20and%20icons%20marking%20different%20types%20of%20activities.%20Students%20are%20looking%20at%20the%20calendar%20in%20a%20bright%2C%20modern%20school%20hallway&width=600&height=400&seq=3&orientation=landscape" alt="Calendario académico" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">Calendario Académico</h3>
+                        <p class="text-gray-600 mb-4">Mantente al día con nuestras actividades académicas y eventos importantes del año escolar.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <div class="w-4 h-4 flex items-center justify-center mt-1 text-primary">
+                                    <i class="ri-calendar-check-line"></i>
+                                </div>
+                                <p class="ml-2 text-sm text-gray-700">20 de Mayo - Inicio de exámenes finales</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-4 h-4 flex items-center justify-center mt-1 text-primary">
+                                    <i class="ri-calendar-check-line"></i>
+                                </div>
+                                <p class="ml-2 text-sm text-gray-700">15 de Junio - Ceremonia de graduación</p>
+                            </div>
+                        </div>
+                        <a href="#" class="inline-block mt-4 text-primary font-medium hover:underline">Ver calendario completo</a>
+                    </div>
+                </div>
+                
+                <!-- Logros y reconocimientos -->
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-transform hover:-translate-y-1">
+                    <div class="h-48 overflow-hidden">
+                        <img src="https://readdy.ai/api/search-image?query=Students%20receiving%20awards%20and%20trophies%20on%20a%20stage%20during%20a%20school%20ceremony.%20The%20students%20are%20wearing%20formal%20uniforms%20and%20looking%20proud%20as%20they%20accept%20their%20achievements.%20The%20background%20shows%20a%20decorated%20auditorium%20with%20banners%20and%20the%20school%20logo%2C%20with%20an%20audience%20of%20parents%20and%20teachers%20applauding&width=600&height=400&seq=4&orientation=landscape" alt="Logros y reconocimientos" class="w-full h-full object-cover object-top">
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-3">Logros y Reconocimientos</h3>
+                        <p class="text-gray-600 mb-4">Celebramos los éxitos de nuestra comunidad educativa a nivel local, nacional e internacional.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <div class="w-4 h-4 flex items-center justify-center mt-1 text-primary">
+                                    <i class="ri-trophy-line"></i>
+                                </div>
+                                <p class="ml-2 text-sm text-gray-700">Premio Nacional a la Excelencia Educativa 2025</p>
+                            </div>
+                            <div class="flex items-start">
+                                <div class="w-4 h-4 flex items-center justify-center mt-1 text-primary">
+                                    <i class="ri-medal-line"></i>
+                                </div>
+                                <p class="ml-2 text-sm text-gray-700">1er Lugar en Olimpiada Internacional de Matemáticas</p>
+                            </div>
+                        </div>
+                        <a href="#" class="inline-block mt-4 text-primary font-medium hover:underline">Ver todos los logros</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección Académica -->
+    <section class="py-16 bg-gray-50" id="academic">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4">Programas Académicos</h2>
+            <p class="text-gray-600 text-center max-w-3xl mx-auto mb-12">Ofrecemos una educación integral en todos los niveles, con programas diseñados para desarrollar las habilidades y talentos de cada estudiante.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Preescolar -->
+                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6 bg-primary/10 rounded-full text-primary">
+                        <i class="ri-teddy-bear-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Preescolar</h3>
+                    <p class="text-gray-600 mb-6">Desde los 3 hasta los 5 años, nuestro programa de preescolar fomenta la curiosidad, creatividad y habilidades sociales en un entorno seguro y estimulante.</p>
+                    <ul class="text-left space-y-2 mb-6">
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Aprendizaje basado en el juego</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Desarrollo de habilidades motoras</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Iniciación a la lectoescritura</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="inline-block bg-primary text-white px-6 py-2 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Más información</a>
+                </div>
+                
+                <!-- Primaria -->
+                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6 bg-primary/10 rounded-full text-primary">
+                        <i class="ri-book-open-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Primaria</h3>
+                    <p class="text-gray-600 mb-6">De 1° a 6° grado, nuestro programa de primaria desarrolla las habilidades fundamentales en matemáticas, lenguaje, ciencias y valores.</p>
+                    <ul class="text-left space-y-2 mb-6">
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Currículo bilingüe (español-inglés)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Educación artística y deportiva</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Desarrollo de pensamiento crítico</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="inline-block bg-primary text-white px-6 py-2 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Más información</a>
+                </div>
+                
+                <!-- Secundaria -->
+                <div class="bg-white rounded-lg shadow-lg p-8 text-center">
+                    <div class="w-16 h-16 flex items-center justify-center mx-auto mb-6 bg-primary/10 rounded-full text-primary">
+                        <i class="ri-graduation-cap-line ri-2x"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-3">Secundaria</h3>
+                    <p class="text-gray-600 mb-6">De 7° a 12° grado, preparamos a nuestros estudiantes para la universidad con un programa académico riguroso y formación en valores.</p>
+                    <ul class="text-left space-y-2 mb-6">
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Programa de Bachillerato Internacional</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Orientación vocacional y profesional</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-0.5 text-primary">
+                                <i class="ri-checkbox-circle-line"></i>
+                            </div>
+                            <span class="ml-2 text-gray-700">Proyectos de investigación y servicio</span>
+                        </li>
+                    </ul>
+                    <a href="#" class="inline-block bg-primary text-white px-6 py-2 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Más información</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sección de Admisiones -->
+    <section class="py-16 bg-white" id="admissions">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-1/2">
+                    <img src="https://readdy.ai/api/search-image?query=A%20welcoming%20school%20admissions%20office%20with%20warm%20lighting%20and%20modern%20design.%20Parents%20and%20prospective%20students%20are%20being%20greeted%20by%20friendly%20staff%20members.%20The%20space%20features%20comfortable%20seating%2C%20informational%20displays%20about%20the%20school%2C%20and%20a%20professional%20yet%20inviting%20atmosphere.%20The%20image%20shows%20a%20diverse%20group%20of%20families%20exploring%20enrollment%20options&width=800&height=600&seq=5&orientation=landscape" alt="Proceso de admisión" class="w-full h-auto rounded-lg shadow-lg">
+                </div>
+                <div class="md:w-1/2">
+                    <h2 class="text-3xl font-bold mb-6">Proceso de Admisión</h2>
+                    <p class="text-gray-600 mb-8">Te invitamos a formar parte de nuestra comunidad educativa. Conoce nuestro proceso de admisión y los requisitos para cada nivel educativo.</p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white font-semibold">1</div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold">Solicitud de información</h3>
+                                <p class="text-gray-600">Completa el formulario en línea o visita nuestras instalaciones para recibir información detallada.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white font-semibold">2</div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold">Visita guiada</h3>
+                                <p class="text-gray-600">Agenda una visita para conocer nuestras instalaciones y resolver todas tus dudas.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white font-semibold">3</div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold">Evaluación diagnóstica</h3>
+                                <p class="text-gray-600">Los aspirantes realizan una evaluación para determinar su nivel académico.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex">
+                            <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-primary text-white font-semibold">4</div>
+                            <div class="ml-4">
+                                <h3 class="text-lg font-semibold">Entrevista familiar</h3>
+                                <p class="text-gray-600">Reunión con el equipo directivo para conocer las expectativas y valores familiares.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8">
+                        <a href="#" class="bg-primary text-white px-6 py-3 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Solicitar admisión</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Galería y Vida Estudiantil -->
+    <section class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-4">Vida Estudiantil</h2>
+            <p class="text-gray-600 text-center max-w-3xl mx-auto mb-12">Descubre las experiencias que hacen de nuestro colegio un lugar especial para aprender y crecer.</p>
+            
+            <div class="gallery-grid mb-12">
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20in%20a%20science%20laboratory%20conducting%20experiments%20with%20microscopes%20and%20lab%20equipment.%20They%20are%20wearing%20safety%20goggles%20and%20lab%20coats%2C%20working%20in%20groups%20with%20a%20teacher%20guiding%20them.%20The%20laboratory%20is%20modern%20with%20bright%20lighting%20and%20scientific%20posters%20on%20the%20walls&width=800&height=800&seq=6&orientation=squarish" alt="Laboratorio de ciencias" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20playing%20soccer%20on%20a%20well-maintained%20sports%20field%20at%20a%20school.%20They%20are%20wearing%20colorful%20sports%20uniforms%20and%20showing%20teamwork%20and%20enthusiasm.%20The%20background%20shows%20school%20buildings%20and%20other%20students%20watching%20from%20the%20sidelines&width=400&height=400&seq=7&orientation=squarish" alt="Actividades deportivas" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20performing%20in%20a%20school%20theater%20production%20with%20colorful%20costumes%20and%20stage%20lighting.%20The%20students%20are%20on%20a%20professional-looking%20stage%20with%20decorative%20backdrops.%20The%20audience%20can%20be%20partially%20seen%20in%20the%20foreground%2C%20watching%20attentively&width=400&height=400&seq=8&orientation=squarish" alt="Teatro escolar" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20in%20an%20art%20class%20creating%20paintings%20and%20sculptures.%20The%20classroom%20is%20bright%20and%20colorful%20with%20student%20artwork%20displayed%20on%20the%20walls.%20Art%20supplies%20are%20organized%20on%20tables%2C%20and%20students%20are%20engaged%20in%20creative%20activities%20with%20an%20art%20teacher%20providing%20guidance&width=400&height=400&seq=9&orientation=squarish" alt="Clase de arte" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20using%20computers%20and%20digital%20technology%20in%20a%20modern%20computer%20lab.%20The%20room%20has%20rows%20of%20desktop%20computers%20with%20students%20working%20on%20programming%20or%20digital%20design%20projects.%20The%20space%20is%20well-lit%20with%20technology-themed%20posters%20and%20a%20teacher%20assisting%20students&width=400&height=400&seq=10&orientation=squarish" alt="Laboratorio de informática" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20in%20a%20school%20library%20reading%20books%20and%20studying.%20The%20library%20has%20tall%20bookshelves%20filled%20with%20books%2C%20comfortable%20reading%20areas%2C%20and%20modern%20study%20spaces.%20Students%20are%20engaged%20in%20quiet%20reading%20and%20research%20activities%20with%20a%20librarian%20helping%20some%20students%20find%20resources&width=800&height=400&seq=11&orientation=landscape" alt="Biblioteca escolar" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20participating%20in%20a%20music%20class%20playing%20various%20instruments%20including%20piano%2C%20violin%2C%20and%20guitars.%20The%20music%20room%20has%20acoustic%20panels%2C%20sheet%20music%20stands%2C%20and%20is%20well-equipped%20with%20instruments.%20A%20music%20teacher%20is%20conducting%20the%20student%20ensemble&width=400&height=400&seq=12&orientation=squarish" alt="Clase de música" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+                <div class="overflow-hidden rounded-lg">
+                    <img src="https://readdy.ai/api/search-image?query=Students%20on%20a%20field%20trip%20to%20a%20museum%2C%20observing%20exhibits%20with%20a%20tour%20guide.%20The%20students%20are%20taking%20notes%20and%20asking%20questions%20about%20the%20displays.%20The%20museum%20is%20modern%20with%20interactive%20exhibits%20and%20educational%20displays&width=400&height=800&seq=13&orientation=portrait" alt="Excursión escolar" class="w-full h-full object-cover object-top transition-transform hover:scale-105">
+                </div>
+            </div>
+            
+            <!-- Testimonios -->
+            <h3 class="text-2xl font-bold text-center mb-8">Testimonios</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full text-primary">
+                            <i class="ri-user-line ri-lg"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold">Martín Rodríguez</h4>
+                            <p class="text-sm text-gray-600">Estudiante de 11° grado</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic">"Los años que he pasado en este colegio han sido fundamentales para mi desarrollo académico y personal. Los profesores realmente se preocupan por nuestro aprendizaje y nos motivan a dar lo mejor de nosotros mismos."</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full text-primary">
+                            <i class="ri-user-line ri-lg"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold">Carolina Méndez</h4>
+                            <p class="text-sm text-gray-600">Madre de familia</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic">"Elegimos este colegio por su excelencia académica, pero nos sorprendió gratamente la formación en valores y el ambiente familiar que se respira. Mis hijos han crecido no solo en conocimientos, sino también como personas."</p>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full text-primary">
+                            <i class="ri-user-line ri-lg"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h4 class="font-semibold">Dr. Alejandro Vega</h4>
+                            <p class="text-sm text-gray-600">Exalumno, Promoción 2010</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 italic">"La formación que recibí en el colegio fue la base de mi éxito profesional. Los valores, la disciplina y el pensamiento crítico que desarrollé aquí me han acompañado durante toda mi carrera universitaria y profesional."</p>
+                </div>
+            </div>
+            
+            <!-- Video institucional -->
+            <div class="mt-16 bg-white p-8 rounded-lg shadow-lg">
+                <h3 class="text-2xl font-bold text-center mb-8">Conoce Nuestro Colegio</h3>
+                <div class="aspect-w-16 aspect-h-9 relative h-[500px] bg-gray-200 rounded-lg overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="w-20 h-20 flex items-center justify-center mx-auto mb-4 bg-primary/90 rounded-full text-white cursor-pointer hover:bg-primary transition-colors">
+                                <i class="ri-play-fill ri-2x"></i>
+                            </div>
+                            <p class="text-gray-700">Haga clic para reproducir el video institucional</p>
+                        </div>
+                    </div>
+                    <img src="https://readdy.ai/api/search-image?query=A%20panoramic%20view%20of%20a%20modern%20school%20campus%20with%20beautiful%20architecture%2C%20green%20spaces%2C%20and%20students%20walking%20between%20buildings.%20The%20image%20shows%20multiple%20school%20buildings%20with%20contemporary%20design%2C%20sports%20facilities%2C%20and%20landscaped%20gardens.%20The%20scene%20is%20captured%20on%20a%20sunny%20day%20with%20blue%20skies&width=1280&height=720&seq=14&orientation=landscape" alt="Video institucional" class="w-full h-full object-cover object-top opacity-50">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pie de Página -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8" id="contact">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <!-- Información de contacto -->
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Contacto</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-1 text-primary">
+                                <i class="ri-map-pin-line"></i>
+                            </div>
+                            <span class="ml-3">Av. Libertadores 1250, San Isidro, Lima, Perú</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-1 text-primary">
+                                <i class="ri-phone-line"></i>
+                            </div>
+                            <span class="ml-3">+51 1 234 5678</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-1 text-primary">
+                                <i class="ri-mail-line"></i>
+                            </div>
+                            <span class="ml-3">info@colegiosanignacio.edu.pe</span>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="w-5 h-5 flex items-center justify-center mt-1 text-primary">
+                                <i class="ri-time-line"></i>
+                            </div>
+                            <span class="ml-3">Lunes a Viernes: 7:30 AM - 4:30 PM</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-6">
+                        <h4 class="font-semibold mb-3">Síguenos en redes sociales</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-primary transition-colors">
+                                <i class="ri-facebook-fill"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-primary transition-colors">
+                                <i class="ri-instagram-line"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-primary transition-colors">
+                                <i class="ri-twitter-x-line"></i>
+                            </a>
+                            <a href="#" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-800 hover:bg-primary transition-colors">
+                                <i class="ri-youtube-line"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Enlaces rápidos -->
+                <div>
+                    <h3 class="text-xl font-bold mb-6">Enlaces Rápidos</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="hover:text-primary transition-colors">Inicio</a></li>
+                        <li><a href="#academic" class="hover:text-primary transition-colors">Programas Académicos</a></li>
+                        <li><a href="#admissions" class="hover:text-primary transition-colors">Admisiones</a></li>
+                        <li><a href="#news" class="hover:text-primary transition-colors">Noticias y Eventos</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Calendario Escolar</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Portal Académico</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Biblioteca Virtual</a></li>
+                        <li><a href="#" class="hover:text-primary transition-colors">Trabaja con Nosotros</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Mapa de ubicación -->
+                <div class="md:col-span-2">
+                    <h3 class="text-xl font-bold mb-6">Nuestra Ubicación</h3>
+                    <div class="h-64 bg-gray-800 rounded-lg overflow-hidden relative">
+                        <div class="absolute inset-0 bg-cover bg-center" style="background-image: url('https://public.readdy.ai/gen_page/map_placeholder_1280x720.png');"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Formulario de contacto -->
+            <div class="bg-gray-800 p-8 rounded-lg mb-12">
+                <h3 class="text-xl font-bold mb-6">Contáctanos</h3>
+                <form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-sm font-medium mb-2" for="name">Nombre completo</label>
+                            <input type="text" id="name" class="w-full px-4 py-2 !rounded-button bg-gray-700 border-none focus:ring-2 focus:ring-primary text-white" placeholder="Ingrese su nombre">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" for="email">Correo electrónico</label>
+                            <input type="email" id="email" class="w-full px-4 py-2 !rounded-button bg-gray-700 border-none focus:ring-2 focus:ring-primary text-white" placeholder="Ingrese su correo">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" for="phone">Teléfono</label>
+                            <input type="tel" id="phone" class="w-full px-4 py-2 !rounded-button bg-gray-700 border-none focus:ring-2 focus:ring-primary text-white" placeholder="Ingrese su teléfono">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" for="subject">Asunto</label>
+                            <input type="text" id="subject" class="w-full px-4 py-2 !rounded-button bg-gray-700 border-none focus:ring-2 focus:ring-primary text-white" placeholder="Ingrese el asunto">
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium mb-2" for="message">Mensaje</label>
+                        <textarea id="message" rows="4" class="w-full px-4 py-2 !rounded-button bg-gray-700 border-none focus:ring-2 focus:ring-primary text-white" placeholder="Escriba su mensaje"></textarea>
+                    </div>
+                    <button type="submit" class="bg-primary text-white px-6 py-3 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Enviar mensaje</button>
+                </form>
+            </div>
+            
+            <!-- Pie de página inferior -->
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>&copy; 2025 Colegio San Ignacio. Todos los derechos reservados.</p>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <a href="#" class="text-sm text-gray-400 hover:text-white transition-colors">Política de Privacidad</a>
+                    <a href="#" class="text-sm text-gray-400 hover:text-white transition-colors">Términos y Condiciones</a>
+                    <a href="#" class="text-sm text-gray-400 hover:text-white transition-colors">Política de Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Botón de chat -->
+<div class="chat-button">
+    <a href="https://wa.me/971221917" target="_blank" rel="noopener"
+       class="w-16 h-16 bg-[#25D366] rounded-full shadow-lg flex items-center justify-center text-white hover:bg-[#1ebe57] transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 32 32" fill="currentColor">
+            <path d="M16.003 3.2c-7.06 0-12.8 5.74-12.8 12.8 0 2.26.6 4.47 1.74 6.41l-1.84 6.73a1.07 1.07 0 0 0 1.31 1.31l6.73-1.84a12.74 12.74 0 0 0 6.41 1.74c7.06 0 12.8-5.74 12.8-12.8s-5.74-12.8-12.8-12.8zm0 23.04c-2.06 0-4.09-.54-5.85-1.56a1.07 1.07 0 0 0-.7-.12l-5.18 1.42 1.42-5.18a1.07 1.07 0 0 0-.12-.7A10.65 10.65 0 1 1 16.003 26.24zm6.09-7.98c-.33-.17-1.97-.97-2.27-1.08-.3-.12-.52-.17-.74.17-.22.33-.85 1.08-1.04 1.3-.19.22-.38.25-.71.08-.33-.17-1.39-.51-2.65-1.62-.98-.87-1.64-1.94-1.83-2.27-.19-.33-.02-.51.15-.68.15-.15.33-.38.5-.57.17-.19.22-.33.33-.55.11-.22.06-.41-.03-.58-.09-.17-.74-1.78-1.01-2.44-.27-.65-.54-.56-.74-.57-.19-.01-.41-.01-.63-.01-.22 0-.58.08-.89.41-.3.33-1.17 1.14-1.17 2.77 0 1.63 1.2 3.2 1.37 3.42.17.22 2.36 3.61 5.73 4.92.8.32 1.43.51 1.92.65.81.26 1.54.22 2.12.13.65-.1 1.97-.8 2.25-1.57.28-.77.28-1.43.2-1.57-.08-.14-.3-.22-.63-.39z"/>
+        </svg>
+    </a>
+</div>
+    
+    <!-- Botón de volver arriba -->
+    <div class="back-to-top" id="backToTop">
+        <button class="w-12 h-12 bg-primary/80 rounded-full shadow-lg flex items-center justify-center text-white hover:bg-primary transition-colors">
+            <i class="ri-arrow-up-line ri-lg"></i>
+        </button>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Indicador de scroll
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            window.addEventListener('scroll', function() {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                scrollIndicator.style.width = scrolled + '%';
+                
+                // Mostrar/ocultar botón volver arriba
+                const backToTop = document.getElementById('backToTop');
+                if (winScroll > 300) {
+                    backToTop.classList.add('visible');
+                } else {
+                    backToTop.classList.remove('visible');
+                }
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Botón volver arriba
+            const backToTop = document.getElementById('backToTop');
+            backToTop.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Slider indicadores
+            const indicators = document.querySelectorAll('.slider-indicator');
+            indicators.forEach((indicator, index) => {
+                indicator.addEventListener('click', function() {
+                    indicators.forEach(ind => ind.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navegación suave
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
