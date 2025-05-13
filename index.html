@@ -138,7 +138,7 @@
                 </div>
             </a>
             
-             <nav class="hidden md:flex items-center space-x-8">
+            <nav id="mainNav" class="hidden md:flex items-center space-x-8">
                 <a href="#inicio" class="text-gray-800 hover:text-primary font-medium transition-colors">Inicio</a>
                 <a href="#academic" class="text-gray-800 hover:text-primary font-medium transition-colors">Académico</a>
                 <a href="#admissions" class="text-gray-800 hover:text-primary font-medium transition-colors">Admisiones</a>
@@ -146,7 +146,7 @@
                 <a href="#contact" class="text-gray-800 hover:text-primary font-medium transition-colors">Contacto</a>
              </nav>
             
-            <div class="flex items-right space-x-4">
+            <div class="flex items-right space-x-1">
                     <a href="pdf/FOLLETO-COLEGIO.pdf" download class="bg-primary text-white px-4 py-2 !rounded-button whitespace-nowrap hover:bg-primary/90 transition-colors">Broucher</a>                
                 <div class="relative">
                     <!-- <input type="text" placeholder="Buscar..." class="border border-gray-300 !rounded-button py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary text-sm w-40 md:w-auto">
@@ -720,6 +720,38 @@
                 });
             });
         });
+        
+        document.addEventListener('DOMContentLoaded', function() {
+    const nav = document.getElementById('mainNav');
+    const menuBtn = document.querySelector('button.md\\:hidden');
+    // Cerrar menú al hacer clic en un enlace (solo en móvil)
+    nav.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth < 768) { // Solo en móvil
+                nav.classList.add('hidden');
+                nav.classList.remove('flex', 'flex-col', 'absolute', 'top-16', 'left-0', 'w-full', 'bg-white', 'shadow-md', 'z-50', 'p-4');
+            }
+        });
+    });
+});
+        
+        document.addEventListener('DOMContentLoaded', function() {
+    const menuBtn = document.querySelector('button.md\\:hidden');
+    const nav = document.getElementById('mainNav');
+    menuBtn.addEventListener('click', function() {
+        nav.classList.toggle('hidden');
+        nav.classList.toggle('flex');
+        nav.classList.toggle('flex-col');
+        nav.classList.toggle('absolute');
+        nav.classList.toggle('top-16');
+        nav.classList.toggle('left-0');
+        nav.classList.toggle('w-full');
+        nav.classList.toggle('bg-white');
+        nav.classList.toggle('shadow-md');
+        nav.classList.toggle('z-50');
+        nav.classList.toggle('p-4');
+    });
+});
     </script>
 </body>
 </html>
